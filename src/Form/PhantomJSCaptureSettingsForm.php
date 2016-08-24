@@ -17,23 +17,11 @@ use Drupal\Core\Form\FormStateInterface;
 class PhantomJSCaptureSettingsForm extends ConfigFormBase {
 
   /**
-   * The config factory service.
-   * @var ConfigFactoryInterface
-   */
-  protected $configFactory;
-
-  /**
-   * The entity manager service.
-   * @var EntityManagerInterface
-   */
-  protected $entityManager;
-
-  /**
    * PhantomCaptureSettingsForm constructor.
    * @param ConfigFactoryInterface $config_factory
    */
   public function __construct(ConfigFactoryInterface $config_factory) {
-    $this->configFactory = $config_factory;
+    parent::__construct($config_factory);
   }
 
   /**
