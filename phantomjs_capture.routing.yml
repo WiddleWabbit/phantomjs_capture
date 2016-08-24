@@ -1,7 +1,7 @@
 phantomjs_capture.settings:
   path: '/admin/config/services/phantomjs'
   defaults:
-    _form: 'Drupal\phantomjs_capture\Form\PhantomCaptureSettingsForm'
+    _form: 'Drupal\phantomjs_capture\Form\PhantomJSCaptureSettingsForm'
     _title: 'PhantomJS Capture'
     _description: 'Administer settings for the PhantomJS Capture service.'
   requirements:
