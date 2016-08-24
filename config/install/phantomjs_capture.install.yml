@@ -1,4 +1,0 @@
-settings:
-  binary_path: ''
-  destination: ''
-  script: 'modules/phantomjs_capture/js/capture.js'
