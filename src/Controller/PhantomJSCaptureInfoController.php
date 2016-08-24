@@ -6,6 +6,10 @@ use Drupal\Core\Controller\ControllerBase;
 
 class PhantomJSCaptureInfoController extends ControllerBase {
 
+  /**
+   * Return basic information about the phantomjs binary, if detected.
+   * @return array
+   */
   public function index() {
     $config = $this->config('phantomjs_capture.settings');
 
