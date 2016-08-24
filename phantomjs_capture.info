@@ -1,4 +1,0 @@
-name = Phantomjs Screen Capture
-description = Provide screen capture with PhantomJS.
-core = 7.x
-package = Other
