@@ -30,47 +30,6 @@ function phantomjs_capture_test_submit($form, $form_state) {
 }
 
 /**
- * Returns the version number of the currently install PhantomJS.
- *
- * @param string $binary
- *   Optional absolute path with the PhantomJS binary. If not given the default
- *   location is used.
- *
- * @return string|boolean
- *   If PhantomJS is found and executable the version number is returned else
- *   FALSE is returned.
- */
-function _phantomjs_capture_get_version($binary = NULL) {
-  // If the binary is not given try the default path.
-  if (is_null($binary)) {
-    $binary = _phantomjs_capture_get_binray();
-    if (!$binary) {
-      drupal_set_message(t('PhantomJS binary was not found. Plase intall PhantomJS on the system.'));
-      return FALSE;
-    }
-  }
-
-  // Execute PhantomJS to get its version, if PhantomJS was found.
-  $output = array();
-  exec($binary . ' -v', $output);
-  return $output[0];
-}
-
-/**
- * Returns the absolute path with the binary to the installed PhantomJS.
- *
- * @return string|boolean
- *   The executable PhantomJS binary or FALSE if not found.
- */
-function _phantomjs_capture_get_binray() {
-  $binary = variable_get('phantomjs_capture_binary', '/usr/local/bin/phantomjs');
-  if (!file_exists($binary)) {
-    return FALSE;
-  }
-  return $binary;
-}
-
-/**
  * Captures a screen shot using PhantomJS by calling the program.
  *
  * @param string $url
