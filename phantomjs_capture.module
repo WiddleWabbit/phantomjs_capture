@@ -3,23 +3,6 @@
 // @todo: hook_help.
 
 /**
- * Implements hook_menu().
- */
-function phantomjs_capture_menu() {
-  $items = array();
-
-  $items['admin/config/user-interface/phantomjs_capture'] = array(
-    'title' => 'PhantomJS Screen capture',
-    'description' => 'Screen capture with PhantomJS',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('phantomjs_capture_admin_form'),
-    'access arguments' => array('adminster site'),
-  );
-
-  return $items;
-}
-
-/**
  * Ajax callback for the test PhantomJS form on the administration page.
  */
 function phantomjs_capture_test_submit($form, $form_state) {
@@ -44,41 +27,6 @@ function phantomjs_capture_test_submit($form, $form_state) {
       ),
     ),
   );
-}
-
-/**
- * Validation of the administration form.
- *
- * It tests that the locations given exists and that the PhantomJS binary is
- * executable (by getting its version number).
- */
-function phantomjs_capture_admin_form_validate(&$form, &$form_state) {
-  // Check that PhantomJS exists.
-  if (!file_exists($form_state['values']['phantomjs_capture_binary'])) {
-    form_set_error('phantomjs_capture_binary', t('PhantomJS was not found at the location given.'));
-  }
-  else {
-    // Only show version message on "Save configuration" submit.
-    if ($form_state['clicked_button']['#value'] == t('Save configuration')) {
-      drupal_set_message(t('PhantomJS version @version found.', array(
-        '@version' => _phantomjs_capture_get_version($form_state['values']['phantomjs_capture_binary']),
-      )));
-    }
-  }
-
-  // Check that destination can be created.
-  $dest = file_default_scheme() . '://' . $form_state['values']['phantomjs_capture_dest'];
-  if (!file_prepare_directory($dest, FILE_CREATE_DIRECTORY)) {
-    form_set_error('phantomjs_capture_dest', t('The path was not writeable or could not be created.'));
-  }
-
-  // Check that capture script exists.
-  if (!file_exists($form_state['values']['phantomjs_capture_script'])) {
-    form_set_error('phantomjs_capture_script', t('PhantomJS script was not found at the location given.'));
-  }
-
-  // Remove test form.
-  unset($form_state['values']['phantomjs_capture_test']);
 }
 
 /**
@@ -136,6 +84,8 @@ function _phantomjs_capture_get_binray() {
  *
  * @return bool
  *   Returns TRUE if the screen shot was taken else FALSE on error.
+ *
+ * @todo: provide this as a service
  */
 function phantomjs_capture_screen($url, $dest, $filename, $element = NULL) {
   // Get PhantomJS binary.
