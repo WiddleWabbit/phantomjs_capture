@@ -98,48 +98,48 @@ class PhantomJSCaptureSettingsForm extends ConfigFormBase {
       '#default_value' => $config->get('script'),
     );
 
-    $form['phantomjs_capture_test'] = array(
-      '#type' => 'details',
-      '#title' => $this->t('Phantom JS test'),
-      '#description' => $this->t('You can use the form in this section to test your installation of PhantomJS.'),
-      '#collapsible' => TRUE,
-      '#collapsed' => TRUE,
-      '#tree' => TRUE,
-    );
-
-    $form['phantomjs_capture_test']['url'] = array(
-      '#type' => 'textfield',
-      '#title' => $this->t('URL'),
-      '#description' => $this->t('Absolute URL to the homepage that should be capture (it has to be a complet URL with http://).'),
-      '#default_value' => 'http://www.google.com',
-    );
-
-    $form['phantomjs_capture_test']['format'] = array(
-      '#type' => 'select',
-      '#title' => 'File format',
-      '#options' => array(
-        '.png' => 'png',
-        '.jpg' => 'jpg',
-        '.pdf' => 'pdf',
-      ),
-    );
-
-    $form['phantomjs_capture_test']['result'] = array(
-      '#prefix' => '<div id="phantomjs-capture-test-result">',
-      '#suffix' => '</div>',
-      '#markup' => '',
-    );
-
-    $form['phantomjs_capture_test']['button'] = array(
-      '#type' => 'button',
-      '#value' => $this->t('Capture'),
-      "#ajax" => array(
-        "callback" => "phantomjs_capture_test_submit",
-        "wrapper" => "phantomjs-capture-test-result",
-        "method" => 'replace',
-        "effect" => "fade",
-      ),
-    );
+//    $form['phantomjs_capture_test'] = array(
+//      '#type' => 'details',
+//      '#title' => $this->t('Phantom JS test'),
+//      '#description' => $this->t('You can use the form in this section to test your installation of PhantomJS.'),
+//      '#collapsible' => TRUE,
+//      '#collapsed' => TRUE,
+//      '#tree' => TRUE,
+//    );
+//
+//    $form['phantomjs_capture_test']['url'] = array(
+//      '#type' => 'textfield',
+//      '#title' => $this->t('URL'),
+//      '#description' => $this->t('Absolute URL to the homepage that should be capture (it has to be a complet URL with http://).'),
+//      '#default_value' => 'http://www.google.com',
+//    );
+//
+//    $form['phantomjs_capture_test']['format'] = array(
+//      '#type' => 'select',
+//      '#title' => 'File format',
+//      '#options' => array(
+//        '.png' => 'png',
+//        '.jpg' => 'jpg',
+//        '.pdf' => 'pdf',
+//      ),
+//    );
+//
+//    $form['phantomjs_capture_test']['result'] = array(
+//      '#prefix' => '<div id="phantomjs-capture-test-result">',
+//      '#suffix' => '</div>',
+//      '#markup' => '',
+//    );
+//
+//    $form['phantomjs_capture_test']['button'] = array(
+//      '#type' => 'button',
+//      '#value' => $this->t('Capture'),
+//      "#ajax" => array(
+//        "callback" => "phantomjs_capture_test_submit",
+//        "wrapper" => "phantomjs-capture-test-result",
+//        "method" => 'replace',
+//        "effect" => "fade",
+//      ),
+//    );
 
     return parent::buildForm($form, $form_state);
   }
@@ -152,28 +152,20 @@ class PhantomJSCaptureSettingsForm extends ConfigFormBase {
     $values = $form_state->getValues();
 
     // Check that PhantomJS exists.
-//    if (!file_exists($form_state['values']['phantomjs_capture_binary'])) {
-//      form_set_error('phantomjs_capture_binary', t('PhantomJS was not found at the location given.'));
-//    }
-//    else {
-//      // Only show version message on "Save configuration" submit.
-//      if ($form_state['clicked_button']['#value'] == t('Save configuration')) {
-//        drupal_set_message(t('PhantomJS version @version found.', array(
-//          '@version' => _phantomjs_capture_get_version($form_state['values']['phantomjs_capture_binary']),
-//        )));
-//      }
-//    }
+    if (!file_exists($values['binary'])) {
+      $form_state->setError($form['settings']['binary'], $this->t('The PhantomJS binary was not found at the location given.'));
+    }
 //
-//    // Check that destination can be created.
-//    $dest = file_default_scheme() . '://' . $form_state['values']['phantomjs_capture_dest'];
-//    if (!file_prepare_directory($dest, FILE_CREATE_DIRECTORY)) {
-//      form_set_error('phantomjs_capture_dest', t('The path was not writeable or could not be created.'));
-//    }
-//
-//    // Check that capture script exists.
-//    if (!file_exists($form_state['values']['phantomjs_capture_script'])) {
-//      form_set_error('phantomjs_capture_script', t('PhantomJS script was not found at the location given.'));
-//    }
+    // Check that destination can be created.
+    $destination = \Drupal::config('system.file')->get('default_scheme') . '://' . $values['destination'];
+    if (!file_prepare_directory($destination, FILE_CREATE_DIRECTORY)) {
+      $form_state->setError($form['settings']['destination'], t('The path was not writeable or could not be created.'));
+    }
+
+    // Check that capture script exists.
+    if (!file_exists($values['script'])) {
+      $form_state->setError($form['settings']['script'], $this->t('PhantomJS script was not found at the location given.'));
+    }
 //
 //    // Remove test form.
 //    unset($form_state['values']['phantomjs_capture_test']);
