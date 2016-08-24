@@ -7,6 +7,13 @@ use Drupal\Core\Form\ConfigFormBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Form\FormStateInterface;
 
+/**
+ * Class PhantomJSCaptureSettingsForm
+ *
+ * Provide a settings form for global settings of PhantomJS Capture.
+ *
+ * @package Drupal\phantomjs_capture\Form
+ */
 class PhantomJSCaptureSettingsForm extends ConfigFormBase {
 
   /**
@@ -49,7 +56,7 @@ class PhantomJSCaptureSettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   protected function getEditableConfigNames() {
-    return ['phantomjs_capture.settings'];
+    return ['phantomjs_capture'];
   }
 
   /**
@@ -57,19 +64,20 @@ class PhantomJSCaptureSettingsForm extends ConfigFormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
     $config = $this->config('phantomjs_capture.settings');
+    $url = 'http://phantomjs.org';
 
     $form['settings'] = array(
       '#type' => 'details',
       '#title' => $this->t('PhantomJS settings'),
-      '#collapsible' => FALSE,
+      '#open' => TRUE,
     );
 
     $form['settings']['binary'] = array(
       '#type' => 'textfield',
       '#required' => TRUE,
-      '#title' => $this->t('Path to phantomJS'),
-      '#description' => $this->t('This module requries that you install PhantomJS on your server and enter the path to the executable. The program is not include in the module due to linces and operation system constrains. See !url for information about download.', array(
-        '!url' => l('PhantomJs.org', 'http://phantomjs.org/'),
+      '#title' => $this->t('Path to PhantomJS binary'),
+      '#description' => $this->t('This module requires that you install PhantomJS on your server and enter the path to the executable. The program is not include in the module due to licensing and operation system constraints. See <a href=":url">:url</a> for more information about downloading.', array(
+        ':url' => $url,
       )),
       '#default_value' => $config->get('binary'),
     );
@@ -78,7 +86,7 @@ class PhantomJSCaptureSettingsForm extends ConfigFormBase {
       '#type' => 'textfield',
       '#required' => TRUE,
       '#title' => $this->t('Default destination'),
-      '#description' => $this->t('The default destination for screenshots captures with PhantomJS'),
+      '#description' => $this->t('The default destination for screenshots captures with PhantomJS.'),
       '#default_value' => $config->get('destination'),
     );
 
