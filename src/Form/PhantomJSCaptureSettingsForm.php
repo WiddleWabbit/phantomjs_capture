@@ -56,7 +56,7 @@ class PhantomJSCaptureSettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   protected function getEditableConfigNames() {
-    return ['phantomjs_capture'];
+    return ['phantomjs_capture.settings'];
   }
 
   /**
@@ -86,7 +86,7 @@ class PhantomJSCaptureSettingsForm extends ConfigFormBase {
       '#type' => 'textfield',
       '#required' => TRUE,
       '#title' => $this->t('Default destination'),
-      '#description' => $this->t('The default destination for screenshots captures with PhantomJS.'),
+      '#description' => $this->t('The default destination for captures with PhantomJS. Do not include public://. Example, "phantomjs" would be stored as public://phantomjs, or private://phantomjs, based on the site file scheme.'),
       '#default_value' => $config->get('destination'),
     );
 
@@ -100,7 +100,6 @@ class PhantomJSCaptureSettingsForm extends ConfigFormBase {
 
     return parent::buildForm($form, $form_state);
   }
-
 
   /**
    * {@inheritdoc}
@@ -129,7 +128,12 @@ class PhantomJSCaptureSettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function submitForm(array &$form, FormStateInterface $form_state) {
-    $this->config('phantomjs.settings')
+    $values = $form_state->getValues();
+
+    $this->config('phantomjs_capture.settings')
+      ->set('binary', $values['binary'])
+      ->set('destination', $values['destination'])
+      ->set('script', $values['script'])
       ->save();
 
     parent::submitForm($form, $form_state);
