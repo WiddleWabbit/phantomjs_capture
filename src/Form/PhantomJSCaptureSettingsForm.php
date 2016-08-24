@@ -143,6 +143,33 @@ class PhantomJSCaptureSettingsForm extends ConfigFormBase {
   public function validateForm(array &$form, FormStateInterface $form_state) {
     $values = $form_state->getValues();
 
+    // Check that PhantomJS exists.
+//    if (!file_exists($form_state['values']['phantomjs_capture_binary'])) {
+//      form_set_error('phantomjs_capture_binary', t('PhantomJS was not found at the location given.'));
+//    }
+//    else {
+//      // Only show version message on "Save configuration" submit.
+//      if ($form_state['clicked_button']['#value'] == t('Save configuration')) {
+//        drupal_set_message(t('PhantomJS version @version found.', array(
+//          '@version' => _phantomjs_capture_get_version($form_state['values']['phantomjs_capture_binary']),
+//        )));
+//      }
+//    }
+//
+//    // Check that destination can be created.
+//    $dest = file_default_scheme() . '://' . $form_state['values']['phantomjs_capture_dest'];
+//    if (!file_prepare_directory($dest, FILE_CREATE_DIRECTORY)) {
+//      form_set_error('phantomjs_capture_dest', t('The path was not writeable or could not be created.'));
+//    }
+//
+//    // Check that capture script exists.
+//    if (!file_exists($form_state['values']['phantomjs_capture_script'])) {
+//      form_set_error('phantomjs_capture_script', t('PhantomJS script was not found at the location given.'));
+//    }
+//
+//    // Remove test form.
+//    unset($form_state['values']['phantomjs_capture_test']);
+
   }
 
   /**
