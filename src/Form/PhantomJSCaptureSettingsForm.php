@@ -56,42 +56,44 @@ class PhantomJSCaptureSettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    $form['phantomjs_settings'] = array(
-      '#type' => 'fieldset',
-      '#title' => t('PhantomJS settings'),
+    $config = $this->config('phantomjs_capture.settings');
+
+    $form['settings'] = array(
+      '#type' => 'details',
+      '#title' => $this->t('PhantomJS settings'),
       '#collapsible' => FALSE,
     );
 
-    $form['phantomjs_settings']['phantomjs_capture_binary'] = array(
+    $form['settings']['binary'] = array(
       '#type' => 'textfield',
       '#required' => TRUE,
-      '#title' => t('Path to phantomJS'),
-      '#description' => t('This module requries that you install PhantomJS on your server and enter the path to the executable. The program is not include in the module due to linces and operation system constrains. See !url for information about download.', array(
+      '#title' => $this->t('Path to phantomJS'),
+      '#description' => $this->t('This module requries that you install PhantomJS on your server and enter the path to the executable. The program is not include in the module due to linces and operation system constrains. See !url for information about download.', array(
         '!url' => l('PhantomJs.org', 'http://phantomjs.org/'),
       )),
-      '#default_value' => variable_get('phantomjs_capture_binary', _phantomjs_capture_get_binray()),
+      '#default_value' => $config->get('binary'),
     );
 
-    $form['phantomjs_settings']['phantomjs_capture_dest'] = array(
+    $form['settings']['destination'] = array(
       '#type' => 'textfield',
       '#required' => TRUE,
-      '#title' => t('Default destination'),
-      '#description' => t('The default destination for screenshots captures with PhantomJS'),
-      '#default_value' => variable_get('phantomjs_capture_dest', 'phantomjs'),
+      '#title' => $this->t('Default destination'),
+      '#description' => $this->t('The default destination for screenshots captures with PhantomJS'),
+      '#default_value' => $config->get('destination'),
     );
 
-    $form['phantomjs_settings']['phantomjs_capture_script'] = array(
+    $form['settings']['script'] = array(
       '#type' => 'textfield',
       '#required' => TRUE,
-      '#title' => t('PhantomJS capture script'),
-      '#description' => t('The script used by PhantomJS to capture the screen. It captures full HD images (1920 x 1080).'),
-      '#default_value' => variable_get('phantomjs_capture_script', drupal_get_path('module', 'phantomjs_capture') . '/js/phantomjs_capture.js'),
+      '#title' => $this->t('PhantomJS capture script'),
+      '#description' => $this->t('The script used by PhantomJS to capture the screen. It captures full HD images (1920 x 1080).'),
+      '#default_value' => $config->get('script'),
     );
 
     $form['phantomjs_capture_test'] = array(
-      '#type' => 'fieldset',
-      '#title' => t('Phantom JS test'),
-      '#description' => t('You can use the form in this section to test your installation of PhantomJS.'),
+      '#type' => 'details',
+      '#title' => $this->t('Phantom JS test'),
+      '#description' => $this->t('You can use the form in this section to test your installation of PhantomJS.'),
       '#collapsible' => TRUE,
       '#collapsed' => TRUE,
       '#tree' => TRUE,
@@ -99,8 +101,8 @@ class PhantomJSCaptureSettingsForm extends ConfigFormBase {
 
     $form['phantomjs_capture_test']['url'] = array(
       '#type' => 'textfield',
-      '#title' => t('URL'),
-      '#description' => t('Absolute URL to the homepage that should be capture (it has to be a complet URL with http://).'),
+      '#title' => $this->t('URL'),
+      '#description' => $this->t('Absolute URL to the homepage that should be capture (it has to be a complet URL with http://).'),
       '#default_value' => 'http://www.google.com',
     );
 
@@ -122,7 +124,7 @@ class PhantomJSCaptureSettingsForm extends ConfigFormBase {
 
     $form['phantomjs_capture_test']['button'] = array(
       '#type' => 'button',
-      '#value' => t('Capture'),
+      '#value' => $this->t('Capture'),
       "#ajax" => array(
         "callback" => "phantomjs_capture_test_submit",
         "wrapper" => "phantomjs-capture-test-result",
