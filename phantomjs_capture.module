@@ -3,33 +3,6 @@
 // @todo: hook_help.
 
 /**
- * Ajax callback for the test PhantomJS form on the administration page.
- */
-function phantomjs_capture_test_submit($form, $form_state) {
-  // Build urls and destination.
-  $url = $form_state['values']['phantomjs_capture_test']['url'];
-  $file = 'test' . $form_state['values']['phantomjs_capture_test']['format'];
-  $dest = file_default_scheme() . '://' . variable_get('phantomjs_capture_dest', 'phantomjs');
-
-  // Get the screen shot and create success/error message.
-  $output = '<div class="messages status"><ul><li>' . t('File have been generated. You can get it !url', array('!url' => l(t('here'), file_create_url($dest . '/' . $file)))) . '.</ul></li></div>';
-  if (!phantomjs_capture_screen($url, $dest, $file)) {
-    $output = '<div class="messages error"><ul><li>' . t('The address entered could not be retrieved.') . '</ul></li></div>';
-  }
-
-  // Return.
-  return array(
-    'phantomjs_capture_test' => array(
-      'result' => array(
-        '#prefix' => '<div id="phantomjs-capture-test-result">',
-        '#suffix' => '</div>',
-        '#markup' => $output,
-      ),
-    ),
-  );
-}
-
-/**
  * Captures a screen shot using PhantomJS by calling the program.
  *
  * @param string $url
