@@ -68,8 +68,7 @@ class PhantomJSCaptureTestForm extends FormBase {
    * {@inheritdoc}
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
-    $values = $form_state->getValues();
-
+    // empty
   }
 
   public function capture(array &$form, FormStateInterface $form_state) {
@@ -79,13 +78,17 @@ class PhantomJSCaptureTestForm extends FormBase {
     // Build urls and destination.
     $url = $values['url'];
     $file = 'capture_test' . $values['format'];
-    $destination = \Drupal::config('system.file')->get('default_scheme') . '://' . $config->get('destination');
+    $destination = \Drupal::config('system.file')->get('default_scheme') . '://' . $config->get('destination') . '/test/' . REQUEST_TIME;
+    $file_url = file_create_url($destination . '/' . $file);
 
-    // Get the screen shot and create success/error message.
-    $output = '<div class="messages status"><ul><li>' . $this->t('The file has been generated. You can view it <a href=":url">here</a>', array(':url' => file_create_url($destination . '/' . $file))) . '.</ul></li></div>';
+    if (!file_prepare_directory($destination, FILE_CREATE_DIRECTORY)) {
+      $form_state->setError($form['destination'], t('The path was not writeable or could not be created.'));
+    }
 
-    if (!phantomjs_capture_screen($url, $file)) {
-      $output = '<div class="messages error"><ul><li>' . $this->t('The address entered could not be retrieved, or phantomjs could not perform the action.') . '</ul></li></div>';
+    if (phantomjs_capture_screen($url, $destination, $file) && file_exists($file_url)) {
+      $output = $this->t('The address entered could not be retrieved, or phantomjs could not perform the action requested.');
+    } else {
+      $output = $this->t('The file has been generated! You can view it <a href=":url">here</a>', array(':url' => $file_url));
     }
 
     return array(
@@ -93,7 +96,7 @@ class PhantomJSCaptureTestForm extends FormBase {
         'result' => array(
           '#prefix' => '<div id="capture-result">',
           '#suffix' => '</div>',
-          '#markup' => $output,
+          '#markup' => '<p>' . $output . '</p>',
         ),
       ),
     );
