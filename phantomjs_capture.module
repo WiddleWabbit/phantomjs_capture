@@ -1,14 +1,12 @@
 <?php
 
-// @todo: hook_help.
+use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 
 /**
  * Captures a screen shot using PhantomJS by calling the program.
  *
  * @param string $url
  *   The ULR/http(s) to render the screen shot from.
- * @param string $dest
- *   The destination for the rendered file (e.g. public://fecthed_images).
  * @param string $filename
  *   The filename to store the file as in the destination.
  * @param string $element
@@ -17,40 +15,38 @@
  * @return bool
  *   Returns TRUE if the screen shot was taken else FALSE on error.
  *
+ * @throws PhantomJSCaptureException
+ *
  * @todo: provide this as a service
  */
-function phantomjs_capture_screen($url, $dest, $filename, $element = NULL) {
-  // Get PhantomJS binary.
-  $binary = _phantomjs_capture_get_binray();
-  if (!$binary) {
-    drupal_set_message(t('PhantomJS binary was not found. Plase intall PhantomJS on the system.'));
-    return FALSE;
-  }
+function phantomjs_capture_screen($url, $filename, $element = NULL) {
+  $config = \Drupal::config('phantomjs_capture.settings');
 
-  // Check that destination is writable.
-  if (!file_prepare_directory($dest, FILE_CREATE_DIRECTORY)) {
-    drupal_set_message(t('The PhantomJS destination path (@dest) was not writeable or could not be created.', array(
-      '@dest' => $dest,
-    )));
-    return FALSE;
+  $binary = $config->get('binary');
+  $destination = $config->get('destination');
+
+  if (!file_exists($binary)) {
+    throw new FileNotFoundException($binary);
   }
 
   // Get absolute path to PhantomJS script and the destination file.
-  $script = realpath(variable_get('phantomjs_capture_script', drupal_get_path('module', 'phantomjs_capture') . '/js/phantomjs_capture.js'));
-  $dest = drupal_realpath($dest . '/' . $filename);
+  $script = realpath($config->get('script'));
+  $destination = \Drupal::service('file_system')->dirname($destination . '/' . $filename);
 
   // Run PhantomJS to create the screen shot.
   $output = array();
+
   if ($element) {
-    exec($binary . ' ' . $script . ' ' . $url . ' ' . $dest . ' ' . escapeshellarg($element), $output);
+    exec($binary . ' ' . $script . ' "' . $url . '" ' . $destination . ' ' . escapeshellarg($element), $output);
   }
   else {
-    exec($binary . ' ' . $script . ' ' . $url . ' ' . $dest, $output);
+    exec($binary . ' ' . $script . ' "' . $url . '" ' . $destination, $output);
   }
 
   // Check that PhantomJS was able to load the page.
   if ($output[0] == '500') {
     return FALSE;
   }
+
   return TRUE;
 }
