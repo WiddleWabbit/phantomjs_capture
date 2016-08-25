@@ -9,7 +9,7 @@ phantomjs_capture.settings:
 phantomjs_capture.test:
   path: '/admin/config/services/phantomjs/test'
   defaults:
-    _form: 'Drupal\phantomjs_capture\Form\PhantomJSCaptureSettingsForm'
+    _form: 'Drupal\phantomjs_capture\Form\PhantomJSCaptureTestForm'
     _title: 'PhantomJS Capture Test'
   requirements:
     _permission: 'administer phantomjs capture'
