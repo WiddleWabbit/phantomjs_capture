@@ -7,6 +7,8 @@ use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
  *
  * @param string $url
  *   The ULR/http(s) to render the screen shot from.
+ * @param string $destination
+ *   The place where the file will be stored.
  * @param string $filename
  *   The filename to store the file as in the destination.
  * @param string $element
@@ -19,11 +21,13 @@ use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
  *
  * @todo: provide this as a service
  */
-function phantomjs_capture_screen($url, $filename, $element = NULL) {
+function phantomjs_capture_screen($url, $destination, $filename, $element = NULL) {
   $config = \Drupal::config('phantomjs_capture.settings');
 
   $binary = $config->get('binary');
-  $destination = $config->get('destination');
+
+  // really want to strive to use a configured dest if possible
+  //$destination = $config->get('destination');
 
   if (!file_exists($binary)) {
     throw new FileNotFoundException($binary);
@@ -31,7 +35,7 @@ function phantomjs_capture_screen($url, $filename, $element = NULL) {
 
   // Get absolute path to PhantomJS script and the destination file.
   $script = realpath($config->get('script'));
-  $destination = \Drupal::service('file_system')->dirname($destination . '/' . $filename);
+  $destination = drupal_realpath($destination . '/' . $filename);
 
   // Run PhantomJS to create the screen shot.
   $output = array();
