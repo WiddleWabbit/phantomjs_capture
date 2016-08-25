@@ -54,13 +54,7 @@ class PhantomJSCaptureSettingsForm extends ConfigFormBase {
     $config = $this->config('phantomjs_capture.settings');
     $url = 'http://phantomjs.org';
 
-    $form['settings'] = array(
-      '#type' => 'details',
-      '#title' => $this->t('PhantomJS settings'),
-      '#open' => TRUE,
-    );
-
-    $form['settings']['binary'] = array(
+    $form['binary'] = array(
       '#type' => 'textfield',
       '#required' => TRUE,
       '#title' => $this->t('Path to PhantomJS binary'),
@@ -70,7 +64,7 @@ class PhantomJSCaptureSettingsForm extends ConfigFormBase {
       '#default_value' => $config->get('binary'),
     );
 
-    $form['settings']['destination'] = array(
+    $form['destination'] = array(
       '#type' => 'textfield',
       '#required' => TRUE,
       '#title' => $this->t('Default destination'),
@@ -78,7 +72,7 @@ class PhantomJSCaptureSettingsForm extends ConfigFormBase {
       '#default_value' => $config->get('destination'),
     );
 
-    $form['settings']['script'] = array(
+    $form['script'] = array(
       '#type' => 'textfield',
       '#required' => TRUE,
       '#title' => $this->t('PhantomJS capture script'),
@@ -97,18 +91,18 @@ class PhantomJSCaptureSettingsForm extends ConfigFormBase {
 
     // Check that PhantomJS exists.
     if (!file_exists($values['binary'])) {
-      $form_state->setError($form['settings']['binary'], $this->t('The PhantomJS binary was not found at the location given.'));
+      $form_state->setError($form['binary'], $this->t('The PhantomJS binary was not found at the location given.'));
     }
 
     // Check that destination can be created.
     $destination = \Drupal::config('system.file')->get('default_scheme') . '://' . $values['destination'];
     if (!file_prepare_directory($destination, FILE_CREATE_DIRECTORY)) {
-      $form_state->setError($form['settings']['destination'], t('The path was not writeable or could not be created.'));
+      $form_state->setError($form['destination'], t('The path was not writeable or could not be created.'));
     }
 
     // Check that capture script exists.
     if (!file_exists($values['script'])) {
-      $form_state->setError($form['settings']['script'], $this->t('PhantomJS script was not found at the location given.'));
+      $form_state->setError($form['script'], $this->t('PhantomJS script was not found at the location given.'));
     }
   }
 
