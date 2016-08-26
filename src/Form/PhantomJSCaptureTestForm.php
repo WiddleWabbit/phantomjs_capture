@@ -2,10 +2,10 @@
 
 namespace Drupal\phantomjs_capture\Form;
 
-use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Form\FormBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Form\FormStateInterface;
+use Drupal\phantomjs_capture\PhantomJSCaptureHelper;
 
 /**
  * Class PhantomJSCaptureTestForm
@@ -15,6 +15,26 @@ use Drupal\Core\Form\FormStateInterface;
  * @package Drupal\phantomjs_capture\Form
  */
 class PhantomJSCaptureTestForm extends FormBase {
+
+  /**
+   * @var PhantomJSCaptureHelper
+   */
+  private $captureHelper;
+
+  /**
+   * PhantomJSCaptureTestForm constructor.
+   * @param PhantomJSCaptureHelper $phantomjs_capture_helper
+   */
+  public function __construct(PhantomJSCaptureHelper $phantomjs_capture_helper) {
+    $this->captureHelper = $phantomjs_capture_helper;
+  }
+
+  /**
+   * {@inheritDoc}
+   */
+  public static function create(ContainerInterface $container) {
+    return new static($container->get('phantomjs_capture.helper'));
+  }
 
   /**
    * {@inheritdoc}
@@ -51,14 +71,8 @@ class PhantomJSCaptureTestForm extends FormBase {
     );
 
     $form['submit'] = array(
-      '#type' => 'button',
+      '#type' => 'submit',
       '#value' => t('Capture'),
-      '#ajax' => array(
-        'callback' => array($this, 'capture'),
-        'wrapper' => 'capture-result',
-        'method' => 'replace',
-        'effect' => 'fade',
-      ),
     );
 
     return $form;
@@ -71,7 +85,10 @@ class PhantomJSCaptureTestForm extends FormBase {
     // empty
   }
 
-  public function capture(array &$form, FormStateInterface $form_state) {
+  /**
+   * {@inheritdoc}
+   */
+  public function submitForm(array &$form, FormStateInterface $form_state) {
     $config = $this->config('phantomjs_capture.settings');
     $values = $form_state->getValues();
 
@@ -81,28 +98,10 @@ class PhantomJSCaptureTestForm extends FormBase {
     $destination = \Drupal::config('system.file')->get('default_scheme') . '://' . $config->get('destination') . '/test/' . REQUEST_TIME;
     $file_url = file_create_url($destination . '/' . $file);
 
-    if (!file_prepare_directory($destination, FILE_CREATE_DIRECTORY)) {
-      $form_state->setError($form['destination'], t('The path was not writeable or could not be created.'));
-    }
-
-    if (phantomjs_capture_screen($url, $destination, $file) && file_exists($file_url)) {
-      $output = $this->t('The address entered could not be retrieved, or phantomjs could not perform the action requested.');
+    if ($this->captureHelper->capture($url, $destination, $file)) {
+      drupal_set_message($this->t('The file has been generated! You can view it <a href=":url">here</a>', array(':url' => $file_url)));
     } else {
-      $output = $this->t('The file has been generated! You can view it <a href=":url">here</a>', array(':url' => $file_url));
+      drupal_set_message('The address entered could not be retrieved, directory was not writeable, or phantomjs could not perform the action requested.', 'error');
     }
-
-    return array(
-      'phantomjs_capture_test' => array(
-        'result' => array(
-          '#prefix' => '<div id="capture-result">',
-          '#suffix' => '</div>',
-          '#markup' => '<p>' . $output . '</p>',
-        ),
-      ),
-    );
-  }
-
-  public function submitForm(array &$form, FormStateInterface $form_state) {
-    // empty
   }
 }
