@@ -6,8 +6,9 @@ use Drupal\Core\Config\ConfigFactoryInterface;
 use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\File\FileSystemInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
+use Drupal\phantomjs_capture\PhantomJSCaptureHelperInterface;
 
-class PhantomJSCaptureHelper {
+class PhantomJSCaptureHelper implements PhantomJSCaptureHelperInterface {
 
   /**
    * @var ConfigFactoryInterface;
@@ -23,6 +24,11 @@ class PhantomJSCaptureHelper {
    * @var FileSystemInterface
    */
   private $fileSystem;
+
+  /**
+   * @var \Drupal\Core\Config\ImmutableConfig
+   */
+  private $config;
 
   /**
    * PhantomJSCaptureHelper constructor.

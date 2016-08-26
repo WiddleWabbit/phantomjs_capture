@@ -5,7 +5,7 @@ namespace Drupal\phantomjs_capture\Form;
 use Drupal\Core\Form\FormBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\phantomjs_capture\PhantomJSCaptureHelper;
+use Drupal\phantomjs_capture\PhantomJSCaptureHelperInterface;
 
 /**
  * Class PhantomJSCaptureTestForm
@@ -23,9 +23,9 @@ class PhantomJSCaptureTestForm extends FormBase {
 
   /**
    * PhantomJSCaptureTestForm constructor.
-   * @param PhantomJSCaptureHelper $phantomjs_capture_helper
+   * @param PhantomJSCaptureHelperInterface $phantomjs_capture_helper
    */
-  public function __construct(PhantomJSCaptureHelper $phantomjs_capture_helper) {
+  public function __construct(PhantomJSCaptureHelperInterface $phantomjs_capture_helper) {
     $this->captureHelper = $phantomjs_capture_helper;
   }
 

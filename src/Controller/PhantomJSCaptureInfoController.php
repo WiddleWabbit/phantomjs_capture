@@ -4,7 +4,7 @@ namespace Drupal\phantomjs_capture\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Drupal\phantomjs_capture\PhantomJSCaptureHelper;
+use Drupal\phantomjs_capture\PhantomJSCaptureHelperInterface;
 
 class PhantomJSCaptureInfoController extends ControllerBase {
 
@@ -15,9 +15,9 @@ class PhantomJSCaptureInfoController extends ControllerBase {
 
   /**
    * PhantomJSCaptureInfoController constructor.
-   * @param PhantomJSCaptureHelper $capture_helper
+   * @param PhantomJSCaptureHelperInterface $capture_helper
    */
-  public function __construct(PhantomJSCaptureHelper $capture_helper) {
+  public function __construct(PhantomJSCaptureHelperInterface $capture_helper) {
     $this->captureHelper = $capture_helper;
   }
 
