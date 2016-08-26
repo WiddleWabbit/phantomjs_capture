@@ -8,13 +8,7 @@ phantom an JavaScript file that tells phantom what to do and this module comes
 with a default JavaScript file that renders full HD size screenshots.
 
 For more information about PhantomJS possibilities you should look at the wiki
-pages at https://github.com/ariya/phantomjs/wiki and the examples that comes
+pages at https://github.com/ariya/phantomjs/wiki and the examples that come
 with PhantomJS.
-
-# Usages
-The module comes with a simple field that allows users to enter a absolute URL
-to a page they want to capture and the field provides a display of the captured
-site which can be displayed using image style and the image may link to the site
-captured.
 
 README needs updating for 8.x.
