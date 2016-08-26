@@ -63,7 +63,7 @@ class PhantomJSCaptureHelper {
       return $output[0];
     }
 
-    return '123';
+    return FALSE;
   }
 
   /**
