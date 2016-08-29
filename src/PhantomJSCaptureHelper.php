@@ -97,6 +97,7 @@ class PhantomJSCaptureHelper implements PhantomJSCaptureHelperInterface {
     }
 
     // Check that destination is writable.
+    // @todo: would be nice to throw an exception instead of return FALSE
     if (!file_prepare_directory($destination, FILE_CREATE_DIRECTORY)) {
       $this->loggerFactory->get('phantomjs_capture')->error('The directory %directory for the file %filename could not be created or is not accessible.', ['%directory' => $destination, '%filename' => $filename]);
       return FALSE;
