@@ -50,8 +50,9 @@ class PhantomJSCaptureTestForm extends FormBase {
   public function buildForm(array $form, FormStateInterface $form_state) {
     $form['url'] = array(
       '#type' => 'textarea',
-      '#title' => t('URL'),
-      '#description' => t('Absolute URL to the page that you want to capture (it must to be a complete URL with http://). Certain kinds of URLs, such as ones that begin with a # symbol (SPAs or some search engine queries) may not work.'),
+      '#title' => $this->t('URL'),
+      '#required' => TRUE,
+      '#description' => $this->t('Absolute URL to the page that you want to capture (it must to be a complete URL with http://). Certain kinds of URLs, such as ones that begin with a # symbol (SPAs or some search engine queries) may not work.'),
       '#default_value' => 'https://www.drupal.org',
     );
 
