@@ -6,6 +6,7 @@ use Drupal\Core\Form\FormBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\phantomjs_capture\PhantomJSCaptureHelperInterface;
+use Drupal\Core\Url;
 
 /**
  * Class PhantomJSCaptureTestForm
@@ -48,10 +49,10 @@ class PhantomJSCaptureTestForm extends FormBase {
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
     $form['url'] = array(
-      '#type' => 'textfield',
+      '#type' => 'textarea',
       '#title' => t('URL'),
-      '#description' => t('Absolute URL to the page that you want to capture (it must to be a complete URL with http://).'),
-      '#default_value' => 'http://www.google.com',
+      '#description' => t('Absolute URL to the page that you want to capture (it must to be a complete URL with http://). Certain kinds of URLs, such as ones that begin with a # symbol (SPAs or some search engine queries) may not work.'),
+      '#default_value' => 'https://www.drupal.org',
     );
 
     $form['format'] = array(
@@ -91,9 +92,8 @@ class PhantomJSCaptureTestForm extends FormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $config = $this->config('phantomjs_capture.settings');
     $values = $form_state->getValues();
+    $url = Url::fromUri($values['url']);
 
-    // Build urls and destination.
-    $url = $values['url'];
     $file = 'capture_test' . $values['format'];
     $destination = \Drupal::config('system.file')->get('default_scheme') . '://' . $config->get('destination') . '/test/' . REQUEST_TIME;
     $file_url = file_create_url($destination . '/' . $file);

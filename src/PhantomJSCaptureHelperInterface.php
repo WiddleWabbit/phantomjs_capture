@@ -2,6 +2,8 @@
 
 namespace Drupal\phantomjs_capture;
 
+use Drupal\Core\Url;
+
 /**
  * Define an interface for a basic phantomjs helper.
  */
@@ -33,6 +35,6 @@ interface PhantomJSCaptureHelperInterface {
    * @param null $element
    * @return mixed
    */
-  public function capture($url, $destination, $filename, $element = NULL);
+  public function capture(Url $url, $destination, $filename, $element = NULL);
 
 }
