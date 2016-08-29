@@ -60,9 +60,9 @@ class PhantomJSCaptureTestForm extends FormBase {
       '#type' => 'select',
       '#title' => 'File format',
       '#options' => array(
-        '.png' => 'png',
-        '.jpg' => 'jpg',
-        '.pdf' => 'pdf',
+        '.png' => 'PNG',
+        '.jpg' => 'JPEG',
+        '.pdf' => 'PDF',
       ),
     );
 
