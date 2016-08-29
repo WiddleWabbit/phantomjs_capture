@@ -76,11 +76,11 @@ class PhantomJSCaptureHelper implements PhantomJSCaptureHelperInterface {
    * Captures a screen shot using PhantomJS by calling the program.
    *
    * @param string $url
-   *   The ULR/http(s) to render the screen shot from.
+   *   The URL to render the screen shot from.
    * @param string $destination
-   *   The destination for the rendered file (e.g. public://fecthed_images).
+   *   The destination for the file (e.g. public://screenshot).
    * @param string $filename
-   *   The filename to store the file as in the destination.
+   *   The filename to store the file as.
    * @param string $element
    *   The id of the DOM element to render in the document.
    *
