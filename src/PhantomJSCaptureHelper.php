@@ -7,6 +7,7 @@ use Drupal\Core\Logger\LoggerChannelFactoryInterface;
 use Drupal\Core\File\FileSystemInterface;
 use Symfony\Component\HttpFoundation\File\Exception\FileNotFoundException;
 use Drupal\phantomjs_capture\PhantomJSCaptureHelperInterface;
+use Drupal\Core\Url;
 
 class PhantomJSCaptureHelper implements PhantomJSCaptureHelperInterface {
 
@@ -75,8 +76,8 @@ class PhantomJSCaptureHelper implements PhantomJSCaptureHelperInterface {
   /**
    * Captures a screen shot using PhantomJS by calling the program.
    *
-   * @param string $url
-   *   The URL to render the screen shot from.
+   * @param Url $url
+   *   An instance of Drupal\Core\Url, the address you want to capture.
    * @param string $destination
    *   The destination for the file (e.g. public://screenshot).
    * @param string $filename
@@ -87,7 +88,7 @@ class PhantomJSCaptureHelper implements PhantomJSCaptureHelperInterface {
    * @return bool
    *   Returns TRUE if the screen shot was taken else FALSE on error.
    */
-  public function capture($url, $destination, $filename, $element = NULL) {
+  public function capture(Url $url, $destination, $filename, $element = NULL) {
     $binary = $this->config->get('binary');
     $script = $this->fileSystem->realpath($this->config->get('script'));
 
@@ -101,6 +102,7 @@ class PhantomJSCaptureHelper implements PhantomJSCaptureHelperInterface {
       return FALSE;
     }
 
+    $url = $url->toUriString();
     $destination = $this->fileSystem->realpath($destination . '/' . $filename);
 
     $output = [];
@@ -114,6 +116,7 @@ class PhantomJSCaptureHelper implements PhantomJSCaptureHelperInterface {
 
     // Check that PhantomJS was able to load the page.
     if ($output[0] == '500') {
+      $this->loggerFactory->get('phantomjs_capture')->error('PhantomJS could not capture the URL %url.', ['%url' => $url]);
       return FALSE;
     }
 
