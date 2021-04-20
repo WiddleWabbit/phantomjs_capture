@@ -1,0 +1,11 @@
+name: Download Flyer
+type: module
+description: Provides a download local task to certain nodes, utilising PhantomJS to download a flyer of the node.
+package: PhantomJS
+core: 8.x
+
+dependencies:
+ - phantomjs_capture
+ - dpi_converter
+
+configure: download_flyer.settings

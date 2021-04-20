@@ -1,0 +1,5 @@
+download_flyer.download:
+  route_name: download_flyer.download
+  title: 'Download'
+  base_route: entity.node.canonical
+  weight: 100

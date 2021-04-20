@@ -1,0 +1,33 @@
+<?php
+
+/**
+ * Implements hook_theme().
+ */
+function download_flyer_theme($existing, $type, $theme, $path) {
+  return [
+    'download_flyer' => [
+      'render element' => 'form',
+      'template' => 'download-flyer',
+    ],
+  ];
+}
+
+/**
+ * Implements hook_preprocess().
+ */
+function download_flyer_preprocess_page(&$variables) {
+    if (\Drupal::routeMatch()->getRouteName() == 'download_flyer.download') {
+        $nid = \Drupal::routeMatch()->getParameter('node');
+        $node = \Drupal\node\Entity\Node::load($nid);
+        $variables['node_title'] = $node->getTitle();
+    }
+}
+
+/**
+ * Implements hook_theme_suggestions_page_alter().
+ */
+function download_flyer_theme_suggestions_page_alter(array &$suggestions, array $variables) {
+    if (\Drupal::routeMatch()->getRouteName() == 'download_flyer.download') {
+        $suggestions[] = 'page__download_flyer';
+    }
+}

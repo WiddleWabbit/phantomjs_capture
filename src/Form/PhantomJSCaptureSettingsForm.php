@@ -80,6 +80,13 @@ class PhantomJSCaptureSettingsForm extends ConfigFormBase {
       '#default_value' => $config->get('script'),
     );
 
+    $form['protected_dir'] = array(
+        '#type' => 'textfield',
+        '#title' => $this->t('Protected Directory'),
+        '#description' => $this->t('Protected directory to save user session information when it needs to be passed for rendering, including trailing slash.'),
+        '#default_value' => $config->get('protected_dir'),
+    );
+
     return parent::buildForm($form, $form_state);
   }
 
@@ -87,6 +94,7 @@ class PhantomJSCaptureSettingsForm extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
+
     $values = $form_state->getValues();
 
     // Check that PhantomJS exists.
@@ -104,6 +112,16 @@ class PhantomJSCaptureSettingsForm extends ConfigFormBase {
     if (!file_exists($values['script'])) {
       $form_state->setError($form['script'], $this->t('PhantomJS script was not found at the location given.'));
     }
+
+    // Validate the protected dir
+    $base_path = $_SERVER["DOCUMENT_ROOT"];
+    if (is_dir($base_path . $form_state->getValue('protected_dir')) != TRUE) {
+        $form_state->setErrorByName('Protected Directory', $this->t('Please enter a valid pre-existing directory for the protected directory.'));
+    }
+    if (is_writeable($base_path . $form_state->getValue('protected_dir')) != TRUE) {
+        $form_state->setErrorByName('Protected Directory', $this->t('Please enter directory that is writable for the protected directory.'));
+    }
+
   }
 
   /**
@@ -116,6 +134,7 @@ class PhantomJSCaptureSettingsForm extends ConfigFormBase {
       ->set('binary', $values['binary'])
       ->set('destination', $values['destination'])
       ->set('script', $values['script'])
+      ->set('protected_dir', $values['protected_dir'])
       ->save();
 
     parent::submitForm($form, $form_state);

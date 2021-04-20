@@ -5,18 +5,54 @@
  */
 var page = require('webpage').create();
 var system = require('system');
-var address, output, size, selector;
+var address, output, size, selector, host, session;
 
 // Get the input parameters.
 address = system.args[1];
 output = system.args[2];
-selector = system.args[3];
+session = system.args[3];
+host = system.args[4];
+selector = system.args[5];
+
+// Require file system
+var fs = require('fs');
+
+// If the session is not set to none, then create the cookie
+if (session != 'none') {
+
+    // Read the session value information
+    file = '../private_tmp/' + session
+    try {
+        f = fs.open(file, "r");
+        value = f.read();
+        f.close();
+    } catch (e) {
+        console.log(e);
+    }
+    value = value.trim();
+
+    // Add Cookie
+    phantom.addCookie({
+        'name'  :  session,
+        'value'  :  value,
+        'domain'  :  host,
+        'path'  :  '/',
+        'httponly'  :  true,
+        'secure'  :  true,
+        'expires' : (new Date()).getTime() + (5000 * 60 * 60)
+    });
+
+}
+
+
+//DEBUGGING
+//fs.write('testlogfile_phantomjs.txt', address + '\n' + output + '\n' + session + '\n' + host + '\n-' + selector + '-\n');
 
 // Set the capture size to full HD.
-page.viewportSize = { width: 1920, height: 1080 };
+page.viewportSize = { width: 1240, height: 1754 };
 
 // Check if PDF should be rendered.
-if (system.args.length === 3 && system.args[1].substr(-4) === ".pdf") {
+if (system.args.length === 5 && system.args[1].substr(-4) === ".pdf") {
   size = system.args[2].split('*');
   page.paperSize = size.length === 2 ? { width: size[0], height: size[1], margin: '0px' } : { format: system.args[2], orientation: 'portrait', margin: '1cm' };
 }

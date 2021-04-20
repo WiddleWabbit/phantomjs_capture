@@ -1,0 +1,11 @@
+.download-flyer-form {
+    max-width: 1140px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20px;
+    border-radius: 0px !important;
+    .form-wrapper {
+        float:left;
+        width:100%;
+    }
+}

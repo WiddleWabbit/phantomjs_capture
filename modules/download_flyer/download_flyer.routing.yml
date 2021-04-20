@@ -1,0 +1,21 @@
+download_flyer.download:
+  path: '/node/{node}/download'
+  defaults:
+    _form: '\Drupal\download_flyer\Form\DownloadFlyerForm'
+    _title_callback: '\Drupal\download_flyer\Controller\DownloadFlyerController::getTitle'
+  requirements:
+    _permission: 'access content'
+    _entity_bundle: 'node:custom_design_flyer'
+    _role: 'dealer'
+    _module_dependencies: 'phantomjs_capture'
+    node: \d+
+
+download_flyer.settings:
+  path: '/admin/config/download_flyer/settings'
+  defaults:
+    _form: '\Drupal\download_flyer\Form\DownloadFlyerSettings'
+    _title: 'Download Flyer Settings'
+  requirements:
+    _permission: 'access administration pages'
+  options:
+    _admin_route: TRUE

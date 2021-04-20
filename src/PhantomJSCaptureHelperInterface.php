@@ -32,9 +32,11 @@ interface PhantomJSCaptureHelperInterface {
    * @param $url
    * @param $destination
    * @param $filename
+   * @param $session
+   * @param $host
    * @param null $element
    * @return mixed
    */
-  public function capture(Url $url, $destination, $filename, $element = NULL);
+  public function capture(Url $url, $destination, $filename, $session, $host, $element = NULL);
 
 }

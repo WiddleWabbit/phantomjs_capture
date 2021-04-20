@@ -1,0 +1,6 @@
+download_flyer.settings:
+  title: 'Download Flyer Configuration'
+  route_name: download_flyer.settings
+  description: 'Download flyer configuration settings'
+  parent: system.admin_config_system
+  weight: 99
