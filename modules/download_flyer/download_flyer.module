@@ -31,3 +31,39 @@ function download_flyer_theme_suggestions_page_alter(array &$suggestions, array 
         $suggestions[] = 'page__download_flyer';
     }
 }
+
+/**
+ * Implements hook_cron().
+ */
+function download_flyer_cron() {
+
+    // Find all the custom design flyers that are more than a week old
+    $query = \Drupal::entityQuery('node');
+    $query->condition('type', 'custom_design_flyer');
+    $query->condition('created', strtotime('-1 week'), '<');
+    $query->condition('status', 0);
+    $entity_ids = $query->execute();
+
+    // Delete all the flyers and create notices in the log
+    foreach ($entity_ids as $entity_id) {
+        $node = \Drupal\node\Entity\Node::load($entity_id);
+        $node->delete();
+        \Drupal::logger('download_flyer')->notice('Deleted node ' . $entity_id . ' because it was created more than a week ago.');
+    }
+
+    // Get all the flyer files in the save directory
+    $config = \Drupal::config('download_flyer.settings');
+    $flyer_dir_uri = \Drupal::config('system.file')->get('default_scheme') . '://' . $config->get('save_dir');
+    $flyer_dir = \Drupal::service('file_system')->realpath($flyer_dir_uri);
+    $dir = new DirectoryIterator($flyer_dir);
+
+    // Delete any more than a day old
+    foreach ($dir as $file) {
+        $file_path = $flyer_dir . '/' . $file;
+        if (($file != '..') && ($file != '.') && (filectime($file_path) < strtotime('-30 minutes'))) {
+            unlink($file_path);
+            \Drupal::logger('download_flyer')->notice('Deleted custom design flyer file ' . $file_path . ' due to age.');
+        }
+    }
+
+}
