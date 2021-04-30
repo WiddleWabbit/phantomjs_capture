@@ -7,6 +7,7 @@
 namespace Drupal\download_flyer\Controller;
 
 use Drupal\Core\Controller\ControllerBase;
+use Drupal\Core\Access\AccessResult;
 
 /**
  * Class DownloadFlyerController
@@ -20,19 +21,25 @@ class DownloadFlyerController extends ControllerBase {
     /**
      * {@inheritdoc}
      */
-    public function getTitle() {
-        $nid = \Drupal::routeMatch()->getParameter('node');
-        $node = \Drupal\node\Entity\Node::load($nid);
-        return $node->getTitle() . ' Download';
+    public function getTitle($node) {
+        $nodedata = \Drupal\node\Entity\Node::load($node);
+        return $nodedata->getTitle() . ' Download';
     }
 
     /**
+     * Access Handler for the Download Flyer Tab
      *
-     *
-     *
+     * @return \Drupal\Core\Access\AccessResult
      */
-    public function downloadFile($file) {
-        
+    public function accessRestriction($node) {
+        $nodedata = \Drupal\node\Entity\Node::load($node);
+        if ($nodedata->bundle() == 'custom_design_flyer') {
+            if (\Drupal\user\Entity\User::load(\Drupal::currentUser()->id())->hasPermission('edit any custom_design_flyer content')) {
+                return AccessResult::allowed();
+            }
+        } else {
+            return AccessResult::forbidden();
+        }
     }
 
 }

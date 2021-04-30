@@ -5,7 +5,7 @@ download_flyer.download:
     _title_callback: '\Drupal\download_flyer\Controller\DownloadFlyerController::getTitle'
   requirements:
     _permission: 'access content'
-    _entity_bundle: 'node:custom_design_flyer'
+    _custom_access: '\Drupal\download_flyer\Controller\DownloadFlyerController::accessRestriction'
     _role: 'dealer'
     _module_dependencies: 'phantomjs_capture'
     node: \d+
